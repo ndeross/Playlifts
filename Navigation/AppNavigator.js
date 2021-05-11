@@ -5,6 +5,8 @@ import "firebase/auth";
 import "firebase/firebase-firestore";
 import firebaseConfig from "../Firebase/firebaseConfig";
 
+import initWorkout from "../Firebase/initWorkout";
+
 import React, {
   createContext,
   useEffect,
@@ -165,7 +167,16 @@ export default function AppNavigator({ navigation, route }) {
               accountCreated: "Today",
             };
 
-            const usersRef = dispatch({
+            const usersRef = firebase.firestore().collection("users");
+
+            const workoutsRef = firebase
+              .firestore()
+              .collection("users")
+              .doc(userToken.uid)
+              .collection("workouts")
+              .doc("user workouts");
+
+            dispatch({
               type: "LOG_IN",
               token: JSON.stringify(userToken),
             });
@@ -177,6 +188,7 @@ export default function AppNavigator({ navigation, route }) {
               .catch((error) => {
                 alert(error);
               });
+            workoutsRef.set(initWorkout);
           })
           .catch((error) => {
             alert(error);
